@@ -63,17 +63,79 @@ Follow the steps to prepare:
 }
 ```
 
-### Add following dependencies using Yarn:
+### Install All Dependencies
 
-- Nodemon: `yarn add nodemon`
-- Express: `yarn add express`
-- Mongoose: `yarn add mongoose`
-- Cors: `yarn add cors`
-- Bcryptjs: `yarn add bcryptjs`
+Intall all dependencies using yarn:
 
-#
+    `yarn add nodemon`
 
-- Create server.js file inside 'api' folder
-- In your VS Code terminal, run `yarn dev` command
+    `yarn add express`
 
-#
+    `yarn add mongoose`
+
+    `yarn add cors`
+
+    `yarn add bcryptjs`
+
+### Database Configuration
+
+1. Create new folder named 'config' inside 'api' folder
+2. Create new file 'dbConfig.js'
+3. In dbConfig.js file, add following code to import Mongoose
+
+```Javascript
+import mongoose from "mongoose"
+```
+
+4. Define database URL name
+
+```Javascript
+const mongo_db_url = "mongodb://localhost:27017/transaction-db"
+```
+
+In above's code, "mongodb://localhost:27017/" is your mongodb server URL provided by mongodb. You need to install and run mongodb in your machine and 'transaction-db' is your database name. You can put your own database name or just follow this guidelines for your ease.
+
+5. Now create a function to connect to your database server using try catch block
+
+```Javascript
+export const connectMongo = () => {
+  try {
+    const connect = mongoose.connect(mongo_db_url)
+    if(connect) {
+      console.log("Database conected");
+    }
+  } catch (error) {
+    console.log("Error:", error);
+  }
+}
+```
+
+```Javascript
+
+```
+
+### Server Setup
+
+1. Create server.js file inside 'api' folder
+2. Import Express
+
+```Javascript
+import express from "express"
+```
+
+3. Import CORS
+
+```Javascript
+import cors from "cors"
+```
+
+4. Import connectMongo
+
+```Javascript
+import { connectMongo } from "./config/dbConfig.js";
+```
+
+- Express: Framework for building the server.
+- CORS: Middleware to enable Cross-Origin Resource Sharing.
+- connectMongo: Function to establish a connection with MongoDB.
+- userRouter & transactionRouter: Routers to handle user and transaction-related - routes.
