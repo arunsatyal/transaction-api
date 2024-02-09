@@ -1,141 +1,170 @@
-# Welcome to Transaction Manager API
+# Transaction Manager
 
-The Transaction Manager API is a robust platform powered by Express, Mongoose, Bcrypt, CORS, and Nodemon. This API is made for keep record of your daily financial transactions, all within a Node.js environment.
+## Description
 
-## Tools & Technologies
+Transaction Manager is a tool designed to track your daily income and expenses activities efficiently. It allows users to manage their financial transactions by adding, viewing, deleting income and expense records.
 
-- HTML
-- CSS
-- Javascript
-- React Bootstrap
-- Node.js
-- Express.js
-- React
-- Redux
-- Mongodb
+## Features
+
+- User authentication (login and signup)
+- Add income and expense entries
+- View all transactions
+- Delete selected transactions
+- Delete all transactions
 
 ## Dependencies
 
-Following are the major dependencies of the project:
+- **Frontend**
+  - React
+  - Axios
+  - React-dom
+  - React-redux
+  - React-router-dom
+  - React-toastify
+- **Backend**
+  - Express
+  - CORS
+  - Bcrypt
+  - Mongoose
+- **State Management**
+  - Redux
 
-- React
-- Axios
-- React-dom
-- React-redux
-- React-router-dom
-- React-toastify
-- Redux
-- Bcrypt
-- CORS
-- Express
-- Mongoose
+## Tools
 
-## Prerequisites
+- Yarn
+- MongoDB Compass
+- Visual Studio Code
 
-Make sure:
+## Installation
 
-- Node.js must be installed on the system.
+To set up the project locally, follow these steps:
 
-- You should have MongoDB installed ([Download & Installation guide]("https://www.mongodb.com/try/download/community"))
-- MongoDB Compass (Recommended) [Download & Installation Guide]("https://www.mongodb.com/try/download/compass)
-- Visual Studio Code (VS Code) [Download]("https://code.visualstudio.com/download)
+1. Make a new repository clone to your api directory: `transaction-manager/api`
+2. Install all dependencies (backend):
 
-## Get Started
+   `yarn add nodemon`
 
-For this project, I used Yarn to add packages.
+   `yarn add express`
 
-To install Yarn, run
-`npm install --global yarn` in your VS Code terminal
+   `yarn add mongoose`
 
-Follow the steps to prepare:
+   `yarn add cors`
 
-- Create a project root folder 'transaction-manager' and make another folder in root folder named 'api'
-- Open VScode terminal and navigate to the 'api' directory
-- In terminal type command `npm init`. It generates a package.json file.
-- Open package.json file and add following code:
+   `yarn add bcryptjs`
 
-```bash
-"type": "module",
-"scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-}
+3. Start the backend server:
+
+`cd api`
+
+`yarn dev`
+
+## Project Structure
+
+### Project Root Folder: `transaction-manager`
+
+Contains all the frontend and backend code necessary for the application to run.
+
+### API Folder: `api`
+
+Holds all the backend code including the server setup, database configuration, models, routes, and utility functions.
+
+#### `server.js`
+
+Sets up the Express server, applies middleware like CORS and JSON parsing, connects to MongoDB, and starts listening on a specified port.
+
+```javascript
+import express from "express";
+import cors from "cors";
+import { connectMongo } from "./config/dbConfig.js";
+import userRouter from "./router/userRouter.js";
+import transactionRouter from "./router/transactionRouter.js";
+
+const app = express();
+const PORT = process.env.PORT || 8000;
+
+app.use(express.json());
+app.use(cors());
+
+connectMongo();
+
+app.use("/api/user", userRouter);
+app.use("/api/transaction", transactionRouter);
+
+app.listen(PORT, (error) => {
+  error ? console.log("error") : console.log("Server is running.");
+});
 ```
 
-### Install All Dependencies
+#### `config/dbConfig.js`
 
-Intall all dependencies using yarn:
-
-    `yarn add nodemon`
-
-    `yarn add express`
-
-    `yarn add mongoose`
-
-    `yarn add cors`
-
-    `yarn add bcryptjs`
-
-### Database Configuration
-
-1. Create new folder named 'config' inside 'api' folder
-2. Create new file 'dbConfig.js'
-3. In dbConfig.js file, add following code to import Mongoose
+Configures the MongoDB connection using Mongoose.
 
 ```Javascript
-import mongoose from "mongoose"
-```
+import mongoose from "mongoose";
 
-4. Define database URL name
-
-```Javascript
 const mongo_db_url = "mongodb://localhost:27017/transaction-db"
-```
 
-In above's code, "mongodb://localhost:27017/" is your mongodb server URL provided by mongodb. You need to install and run mongodb in your machine and 'transaction-db' is your database name. You can put your own database name or just follow this guidelines for your ease.
-
-5. Now create a function to connect to your database server using try catch block
-
-```Javascript
 export const connectMongo = () => {
   try {
     const connect = mongoose.connect(mongo_db_url)
     if(connect) {
-      console.log("Database conected");
+      console.log("Database connected");
     }
   } catch (error) {
     console.log("Error:", error);
   }
 }
-```
-
-```Javascript
 
 ```
 
-### Server Setup
+## Models and Schemas
 
-1. Create server.js file inside 'api' folder
-2. Import Express
+Defines the schema for users and transactions, and provides functions to interact with the database for creating and finding users and transactions.
 
-```Javascript
-import express from "express"
-```
+#### User Model (userModel.js):
 
-3. Import CORS
+Handles creating a user, finding a user by email, and finding a user by ID.
 
-```Javascript
-import cors from "cors"
-```
+#### User Schema (userSchema.js):
 
-4. Import connectMongo
+Defines the user table schema in the database.
 
-```Javascript
-import { connectMongo } from "./config/dbConfig.js";
-```
+### Transaction Model (transactionModel.js):
 
-- Express: Framework for building the server.
-- CORS: Middleware to enable Cross-Origin Resource Sharing.
-- connectMongo: Function to establish a connection with MongoDB.
-- userRouter & transactionRouter: Routers to handle user and transaction-related - routes.
+Handles fetching all transactions for a logged-in user, creating a transaction, and deleting selected transactions.
+
+### Transaction Schema (transactionSchema.js):
+
+Defines the transaction table schema in the database.
+
+## Routers
+
+Defines the routes for user and transaction operations, applying middleware for authentication and using utility functions to send success or error responses.
+
+### User Router (userRouter.js):
+
+Routes for user signup and login.
+
+### Transaction Router (transactionRouter.js):
+
+Routes for getting all transactions, creating a transaction, and deleting transactions.
+
+## Utility Functions
+
+Includes helper functions for hashing passwords, comparing hashed passwords, and building success or error responses.
+
+### Bcrypt Helper (bcryptHelper.js):
+
+Functions for hashing a password and comparing a plain password with a hashed password.
+
+### Response Helper (responseHelper.js):
+
+Functions for building success or error responses to send back to the client.
+
+## Usage
+
+After installation, the application can be accessed at http://localhost:8000 endpoint.
+
+## License
+
+MIT
